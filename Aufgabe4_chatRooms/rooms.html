@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Controller</title>
+</head>
+<body>
+    <h1 id="roomId"></h1>
+    <div id="chatArea">
+
+    </div>
+    <input type="text" id="message">
+    <button id="button" onclick="sendMessage()">Send Message</button>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var queryString = window.location.search;
+        var urlParams = new URLSearchParams(queryString);
+        var roomId = urlParams.get("id");
+
+        document.getElementById("roomId").innerText = "Room " + roomId;
+
+        var socket = io("/room"+roomId);
+        var chatArea = document.getElementById("chatArea");
+        
+        socket.on("message",function(msg){
+            console.log(msg);
+            chatArea.innerHTML += msg + "<br>";
+        });
+
+        function sendMessage(){
+            
+            var message = document.getElementById("message").value
+            socket.emit("message",message);
+        }
+    </script>
+</body>
+</html>
